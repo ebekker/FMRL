@@ -1,0 +1,159 @@
+﻿@page "/{keyB32}"
+@inject Sotsera.Blazor.Toaster.IToaster toaster
+@inject Services.ICrypto crypto
+@inject Services.IRepo repo
+
+@if (_msgDetails != null && _message == null)
+{
+    <form>
+        <div class="row" hidden=@(!(_msgDetails?.PasswordUsed??false))>
+            <div class="col form-group">
+                <input type="password" id="fmrlPassword" bind=@_password
+                       class="form-control" placeholder="Password" />
+                <small id="fmrlPasswordHelp" class="form-text text-muted">A password is required to decrypt this message.</small>
+            </div>
+            <div class="col"></div>
+            <div class="col"></div>
+        </div>
+        <div class="row">
+            <div class="col form-group form-check">
+                <input type="checkbox" id="fmrlTos2" bind=@_acceptTos
+                       class="XXXform-check-input" />
+                <label class="form-check-label"
+                       for="fmrlTos2">Accept&nbsp;<TosPopupLink Text="Terms & Conditions" /></label>
+            </div>
+            <div class="col"></div>
+            <div class="col"></div>
+        </div>
+
+        <button type="button" class="btn btn-primary" disabled=@(!_acceptTos)
+                onclick=@Submit>Decrypt & Delete Message</button>
+    </form>
+}
+
+@if (_message != null)
+{
+    <form>
+        <div class="row alert alert-success">
+            Your message has been retrieved, decrypted and DELETED.
+        </div>
+        <div class="row alert alert-warning">
+            Your message cannot be recovered once you leave this page.
+        </div>
+        <div class="row">
+            <textarea id="fmrlMessage2" bind=@_message
+                      class="form-control" rows="8"
+                      readonly="readonly"
+                      placeholder="Your message will appear here"></textarea>
+        </div>
+    </form>
+}
+
+<TosPopup />
+
+@functions {
+    [Parameter] string KeyB32 { get; set; }
+
+    byte[] _key;
+    string _keyHashB64;
+
+    Model.EncodedMessage _msgDetails;
+
+    string _password;
+    bool _acceptTos;
+    string _message;
+
+    protected override async Task OnInitAsync()
+    {
+        // Recover the raw encryption key from the Base32 encoding
+        _key = Util.Base32.FromBase32String(KeyB32);
+        // Hash the key to compute the index into the repo
+        var keyHash = crypto.ComputeHash(_key);
+        // The key hash is encoded user the safer B64Url because
+        // slashes get interpreted as path components by some repos
+        _keyHashB64 = Util.Base64Url.ToBase64UrlString(keyHash);
+
+        // Recall the message details, and extract the raw bytes
+        _msgDetails = await repo.Read<Model.EncodedMessage>($"{_keyHashB64}.json");
+
+        if (_msgDetails == null)
+        {
+            toaster.Error("The message you are trying to recover either"
+                + " does not exist or has already been recovered and deleted.",
+                "Message Not Found", configure =>
+                {
+                    configure.RequireInteraction = true;
+                });
+        }
+    }
+
+    async Task Submit()
+    {
+        bool invalid = false;
+        if (_msgDetails.PasswordUsed && string.IsNullOrEmpty(_password))
+        {
+            toaster.Error("The message you are trying to recover"
+                + " requires a password.", "Password Required");
+            invalid = true;
+        }
+
+        if (!_acceptTos)
+        {
+            toaster.Error("You have to agree to the Terms of Service.");
+            invalid = true;
+        }
+
+        if (invalid)
+            return;
+
+        var iv = Util.Base64Url.FromBase64UrlString(_msgDetails.IV);
+        var encoded = Util.Base64Url.FromBase64UrlString(_msgDetails.Encoded);
+
+        // Let's try to decrypt and verify
+        var decoded = crypto.Decrypt(_key, iv, encoded);
+        var msgHash = Util.Base64Url.ToBase64UrlString(crypto.ComputeHash(decoded));
+        if (msgHash != _msgDetails.Digested)
+        {
+            toaster.Error("Invalid encryption key, cannot recover message");
+            return;
+        }
+
+        if (!string.IsNullOrEmpty(_password))
+        {
+            var pbCombined = System.Text.Encoding.UTF8.GetString(decoded).Split(';');
+            Console.WriteLine("pbCombined:");
+            Console.WriteLine(pbCombined[0]);
+            Console.WriteLine(pbCombined[1]);
+            Console.WriteLine(pbCombined[2]);
+            Console.WriteLine(pbCombined[3]);
+            if (pbCombined.Length != 4)
+            {
+                toaster.Error("Invalid password-based encrypted content");
+                return;
+            }
+            var pbSalt = Convert.FromBase64String(pbCombined[0]);
+            var pbIv = Convert.FromBase64String(pbCombined[1]);
+            var pbEncoded = Convert.FromBase64String(pbCombined[2]);
+            var pbDigested = Convert.FromBase64String(pbCombined[3]);
+            try
+            {
+                decoded = crypto.Decrypt(_password, pbSalt, pbIv, pbEncoded);
+                var pbMsgHash = crypto.ComputeHash(decoded);
+                if (pbMsgHash != pbDigested)
+                {
+                    toaster.Error("Invalid password, cannot recover message");
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Failed to decode password-based encryption: " + ex);
+                toaster.Error("Failed to recover password-based encrypted content.");
+                return;
+            }
+        }
+
+        _message = System.Text.Encoding.UTF8.GetString(decoded);
+        await repo.Delete($"{_keyHashB64}.json");
+    }
+}

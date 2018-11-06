@@ -1,0 +1,147 @@
+﻿@page "/"
+@page "/create"
+@inject Sotsera.Blazor.Toaster.IToaster toaster
+@inject Services.ICrypto crypto
+@inject Services.IRepo repo
+@inject Microsoft.AspNetCore.Blazor.Services.IUriHelper uriHelper
+
+
+<form>
+    @if (_fmrlLink == null)
+    {
+        <div class="row form-group">
+            <div class="col">
+                @*<label for="fmrlMessage">Message</label>*@
+                <textarea id="fmrlMessage2" bind=@_message
+                          class="form-control" rows="8"
+                          placeholder="Enter your message here"></textarea>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col form-group">
+                @*<label for="fmrlPassword">Password</label>*@
+                <input type="password" id="fmrlPassword" bind=@_password
+                       class="form-control" placeholder="Password" />
+                <small id="fmrlPasswordHelp" class="form-text text-muted">Optional password adds additional layer of client-side encryption.</small>
+            </div>
+            <div class="col"></div>
+            <div class="col"></div>
+        </div>
+        <div class="row">
+            <div class="col form-group form-check">
+                <input type="checkbox" id="fmrlTos2" bind=@_acceptTos
+                       class="XXXform-check-input" />
+                <label class="form-check-label"
+                       for="fmrlTos2">Accept&nbsp;<TosPopupLink /></label>
+            </div>
+            <div class="col"></div>
+            <div class="col"></div>
+        </div>
+
+        <button type="button" class="btn btn-primary" disabled=@(!_acceptTos)
+                onclick=@Submit>
+            Create Message Link
+        </button>
+    }
+    else
+    {
+        <div class="row alert alert-success">
+            Your message has been encrypted and stored.
+            It will be automatically deleted in the next
+            24 hours or can be retrieved one time
+            by using the link below.
+        </div>
+        <div class="col form-group">
+            <label for="fmrlLink">Recovery Link</label>
+            <input type="text" id="fmrlLink" bind=@_fmrlLink
+                   class="form-control" readonly="readonly" />
+            <small id="fmrlLinkHelp" class="form-text text-muted">Use this URL to retrieve the message one time.</small>
+        </div>
+
+        <button type="button" class="btn btn-primary" onclick=@Reset>
+            Secure Another Message
+        </button>
+    }
+</form>
+
+<TosPopup />
+
+@functions {
+    string _message;
+    string _password;
+    bool _acceptTos;
+    string _fmrlLink = null;
+
+    void Reset()
+    {
+        _message = null;
+        _password = null;
+        _fmrlLink = null;
+    }
+
+    async Task Submit()
+    {
+        bool invalid = false;
+        if (string.IsNullOrEmpty(_message))
+        {
+            toaster.Error("You have to provide a non-empty message.");
+            invalid = true;
+        }
+
+        if (!_acceptTos)
+        {
+            toaster.Error("You have to agree to the Terms of Service.");
+            invalid = true;
+        }
+
+        if (invalid)
+            return;
+
+        // Convert message string to its byte form for encoding
+        var decoded = System.Text.Encoding.UTF8.GetBytes(_message);
+
+        if (!string.IsNullOrEmpty(_password))
+        {
+            var pbMsgHash = crypto.ComputeHash(decoded);
+            var (pbSalt, pbIv, pbEncoded) = crypto.Encrypt(_password, decoded);
+            var pbB64 = (
+                pbSalt: Convert.ToBase64String(pbSalt),
+                pbIv: Convert.ToBase64String(pbIv),
+                pbEncoded: Convert.ToBase64String(pbEncoded),
+                pbDigested: Convert.ToBase64String(pbMsgHash)
+            );
+            var pbCombined = $"{pbB64.pbSalt};{pbB64.pbIv};{pbB64.pbEncoded};{pbB64.pbDigested}";
+            decoded = System.Text.Encoding.UTF8.GetBytes(pbCombined);
+        }
+
+        // Encrypt the message producing components for decryption
+        var (key, iv, encoded) = crypto.Encrypt(decoded);
+        // Generate a hash of the message to verify the decryption
+        var msgHash = crypto.ComputeHash(decoded);
+
+        // We encode the encryption key in Base32 for the recovery link
+        var keyB32 = Util.Base32.ToBase32String(key, addPadding: false);
+        // Generate a hash of the key to safely index into the repo
+        var keyHash = crypto.ComputeHash(key);
+        // The key hash is encoded user the safer B64Url because
+        // slashes get interpreted as path components by some repos
+        var keyHashB64 = Util.Base64Url.ToBase64UrlString(keyHash);
+
+        // Package it all up and write to the repo
+        await repo.Write($"{keyHashB64}.json", new Model.EncodedMessage
+        {
+            IV = Util.Base64Url.ToBase64UrlString(iv),
+            Encoded = Util.Base64Url.ToBase64UrlString(encoded),
+            Digested = Util.Base64Url.ToBase64UrlString(msgHash),
+            PasswordUsed = !string.IsNullOrEmpty(_password),
+        });
+
+        // Compute the relative recovery link
+        _fmrlLink = new Uri(new Uri(uriHelper.GetBaseUri()), keyB32).ToString();
+
+        // Reset all these to clear it for next message
+        _message = null;
+        _password = null;
+        _acceptTos = false;
+    }
+}

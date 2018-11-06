@@ -1,7 +1,4 @@
-# FMRL
-Ephemeral Message Service - https://fmrl.link/
-
----
+﻿# README - FMRL (Ephemeral Message Service)
 
 Special thanks to these great projects that we depend on:
 

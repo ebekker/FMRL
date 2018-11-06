@@ -1,0 +1,12 @@
+@inherits BlazorLayoutComponent
+<div class="main">
+    <div class="top-row px-4">
+        <h1>FMRL.LINK</h1>
+        <h6>Ephemeral Message Service</h6>
+        <NavLink class="ml-md-auto"
+                 Match=NavLinkMatch.All href="/about">About</NavLink>
+    </div>
+    <div class="content px-4">
+        @Body
+    </div>
+</div>
