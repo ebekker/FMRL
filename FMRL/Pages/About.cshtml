@@ -1,25 +1,44 @@
 ﻿@page "/about"
+@layout EmptyLayout
 
-<h1>About FMRL.LINK</h1>
+<div class="main">
+    <div class="top-row px-4">
+        <h1>About FMRL.link</h1>
+        <NavLink class="ml-md-auto"
+                 Match=NavLinkMatch.All href="/">Home</NavLink>
+    </div>
+    <div class="content px-4">
 
-<div>
-    This site is powered by <a href="http://blazor.net" target="_blank" class="ml-md-auto">Blazor</a>.
-</div>
+        <p>
+            This site was inspired by <a href="https://tmwsd.ws/" target="_blank" class="ml-md-auto">TMWSD</a>
+            and created as an experiment to play around with Blazor.
+        </p>
 
-<div>
-    Special thanks to these other fine projects:
+        <h2>Blazor</h2>
+        <p>
+            <a href="http://blazor.net/" target="_blank" class="ml-md-auto">Blazor</a>
+            is an experimental technology that allows development of browser-side applications in C# using
+            the power of <a href="https://webassembly.org/" target="_blank" class="ml-md-auto">WebAssembly</a>.
+        </p>
 
-    <ul>
-        <li>
-            <a href="https://github.com/sotsera/sotsera.blazor.toaster"
-               target="_blank" class="ml-md-auto">Sotsera.Blazor.Toaster</a>
-        </li>
-        <li>
-            <a href="https://github.com/BlazorExtensions/Home"
-               target="_blank" class="ml-md-auto">Blazor Extensions</a>
-        </li>
-        <li>
-            <i>more coming soon...</i>
-        </li>
-    </ul>
+        <h2>Thanks</h2>
+        <p>
+            Special thanks to these other fine projects:
+
+            <ul>
+                <li>
+                    <a href="https://github.com/sotsera/sotsera.blazor.toaster"
+                       target="_blank" class="ml-md-auto">Sotsera.Blazor.Toaster</a>
+                </li>
+                <li>
+                    <a href="https://github.com/BlazorExtensions/Home"
+                       target="_blank" class="ml-md-auto">Blazor Extensions</a>
+                </li>
+                <li>
+                    <i>more coming soon...</i>
+                </li>
+            </ul>
+        </p>
+
+    </div>
 </div>
