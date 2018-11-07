@@ -17,6 +17,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Update="Shared\EmptyLayout.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
     <Content Update="Shared\DefaultLayout.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
