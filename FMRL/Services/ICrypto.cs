@@ -53,7 +53,7 @@ namespace FMRL.Services
         {
             using (var sha = SHA256.Create())
             {
-                return sha.TransformFinalBlock(data, 0, data.Length);
+                return sha.ComputeHash(data);
             }
         }
 
