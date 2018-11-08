@@ -10,6 +10,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Misc", "Misc", "{C1B05343-B
 		README.md = README.md
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorX.WebCrypto", "BlazorX.WebCrypto\BlazorX.WebCrypto.csproj", "{9714A160-D354-4443-9C6D-4E87ED78531B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -20,6 +22,10 @@ Global
 		{7E45A984-F4DB-480C-AEDE-8DCF41210A37}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7E45A984-F4DB-480C-AEDE-8DCF41210A37}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7E45A984-F4DB-480C-AEDE-8DCF41210A37}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9714A160-D354-4443-9C6D-4E87ED78531B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9714A160-D354-4443-9C6D-4E87ED78531B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9714A160-D354-4443-9C6D-4E87ED78531B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9714A160-D354-4443-9C6D-4E87ED78531B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
