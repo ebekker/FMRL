@@ -25,7 +25,7 @@ namespace FMRL.Services
         byte[] Decrypt(string password, byte[] salt, byte[] iv, byte[] encoded);
     }
 
-    public class BclCrypt : ICrypto
+    public class BclCrypto : ICrypto
     {
         public const int SymmetricKeyLength = 128;
 

@@ -9,7 +9,7 @@ namespace FMRL
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<ICrypto, BclCrypt>();
+            services.AddSingleton<ICrypto, BclCrypto>();
             services.AddSingleton<IRepo, FirebaseRepo>();
             services.AddToaster(config =>
             {
