@@ -1,0 +1,30 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <Target Name="WriteAppVersionInternal" AfterTargets="GetGitHash">
+    <PropertyGroup>
+      <AppVersionInternalFile>$(IntermediateOutputPath)AppVersionInternal.cs</AppVersionInternalFile>
+      <AppVersionInternalClass><![CDATA[
+namespace FMRL
+{
+  public static partial class AppVersion
+  {
+      static partial void GetVersionInternal(ref string version)
+      {
+          version = "$(Version)-$(MSBuildGitHashValue)"%3B
+      }
+  }
+}
+    ]]></AppVersionInternalClass>
+    </PropertyGroup>
+
+    <WriteLinesToFile
+        File="$(AppVersionInternalFile)"
+        Overwrite="true"
+        Lines="$(AppVersionInternalClass)"
+        />
+    <ItemGroup>
+      <Compile Include="$(AppVersionInternalFile)" />
+    </ItemGroup>
+  </Target>
+  
+</Project>
