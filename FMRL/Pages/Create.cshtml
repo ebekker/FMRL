@@ -128,13 +128,22 @@
         var keyHashB64 = Util.Base64Url.ToBase64UrlString(keyHash);
 
         // Package it all up and write to the repo
-        await repo.Write($"{keyHashB64}.json", new Model.EncodedMessage
+        try
         {
-            IV = Util.Base64Url.ToBase64UrlString(iv),
-            Encoded = Util.Base64Url.ToBase64UrlString(encoded),
-            Digested = Util.Base64Url.ToBase64UrlString(msgHash),
-            PasswordUsed = !string.IsNullOrEmpty(_password),
-        });
+            await repo.Write($"messages/{keyHashB64}.json", new Model.EncodedMessage
+            {
+                IV = Util.Base64Url.ToBase64UrlString(iv),
+                Encoded = Util.Base64Url.ToBase64UrlString(encoded),
+                Digested = Util.Base64Url.ToBase64UrlString(msgHash),
+                PasswordUsed = !string.IsNullOrEmpty(_password),
+            });
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine("Failed to write message: " + ex);
+            toaster.Error("Failed to write message:  " + ex.Message);
+            return;
+        }
 
         // Compute the relative recovery link
         _fmrlLink = new Uri(new Uri(uriHelper.GetBaseUri()), keyB32).ToString();

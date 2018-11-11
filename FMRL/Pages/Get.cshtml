@@ -73,8 +73,26 @@
         // slashes get interpreted as path components by some repos
         _keyHashB64 = Util.Base64Url.ToBase64UrlString(keyHash);
 
-        // Recall the message details, and extract the raw bytes
-        _msgDetails = await repo.Read<Model.EncodedMessage>($"{_keyHashB64}.json");
+        try
+        {
+            // Recall the message details, and extract the raw bytes
+            _msgDetails = await repo.Read<Model.EncodedMessage>($"messages/{_keyHashB64}.json");
+        }
+        catch (Exception ex)
+        {
+            if (ex is Services.HttpRequestWithStatusException rex
+                && rex.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+            {
+                // This most likely signifies an expired message
+                Console.WriteLine("unauthorized access for expired message");
+            }
+            else
+            {
+                Console.Error.WriteLine("Failed to read message: " + ex);
+                toaster.Error("Failed to read message: " + ex.Message);
+                return;
+            }
+        }
 
         if (_msgDetails == null)
         {
@@ -154,6 +172,6 @@
         }
 
         _message = System.Text.Encoding.UTF8.GetString(decoded);
-        await repo.Delete($"{_keyHashB64}.json");
+        await repo.Delete($"messages/{_keyHashB64}.json");
     }
 }

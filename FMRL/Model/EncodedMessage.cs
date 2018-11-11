@@ -7,7 +7,7 @@ namespace FMRL.Model
 {
     public class EncodedMessage
     {
-        public DateTime Created { get; set; } = DateTime.UtcNow;
+        public long Created { get; set; } = (long)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalMilliseconds;
 
         public string IV { get; set; }
 
