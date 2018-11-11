@@ -68,13 +68,13 @@ namespace FMRL.Services
             try
             {
                 resp.EnsureSuccessStatusCode();
+                return Json.Deserialize<T>(await resp.Content.ReadAsStringAsync());
             }
             catch (Exception ex)
             {
                 throw new HttpRequestWithStatusException(ex.Message, ex.InnerException,
                     resp.StatusCode);
             }
-            return await _http.GetJsonAsync<T>(url.ToString());
         }
 
         public async Task Delete(string path)
