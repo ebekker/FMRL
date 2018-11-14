@@ -1,0 +1,29 @@
+{
+    "rules": {
+        "messages": {
+            "$message_id": {
+                // a new message can be created if it does not
+                // exist, or it can be deleted altogether
+                ".write": "!data.exists() || !newData.exists()",
+
+                    // only messages from the last 24 hours can be read
+                    // 24 * 60 * 60 * 1000 = 86,400,000
+                    //".read": "data.child('created').val() > (now - 86400000)",
+                    ".read": "!data.exists() || (data.child('created').val() > (now - 600000))",
+
+                        // Elapsed time in ms since Unix Epoch 
+                        // should be fairly accurate with server's time
+                        "created": { ".validate": "newData.val() >= now - 1000 && newData.val() <= now + 1000" },
+
+                // must be longer than 0 chars and less than 50
+                "digested": { ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length < 50" },
+                "encoded": { ".validate": "newData.isString() && newData.val().length > 0" },
+                "iv": { ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length < 50" },
+                "passwordUsed": { ".validate": "newData.isBoolean()" },
+
+                // no other fields can be included in a message
+                "$other": { ".validate": false }
+            }
+        }
+    }
+}
