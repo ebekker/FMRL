@@ -152,11 +152,11 @@
             var pbSalt = Convert.FromBase64String(pbCombined[0]);
             var pbIv = Convert.FromBase64String(pbCombined[1]);
             var pbEncoded = Convert.FromBase64String(pbCombined[2]);
-            var pbDigested = Convert.FromBase64String(pbCombined[3]);
+            var pbDigested = pbCombined[3];
             try
             {
                 decoded = crypto.Decrypt(_password, pbSalt, pbIv, pbEncoded);
-                var pbMsgHash = crypto.ComputeHash(decoded);
+                var pbMsgHash = Convert.ToBase64String(crypto.ComputeHash(decoded));
                 if (pbMsgHash != pbDigested)
                 {
                     toaster.Error("Invalid password, cannot recover message");
