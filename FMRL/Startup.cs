@@ -1,4 +1,5 @@
 using FMRL.Services;
+using FMRL.Services.Impl;
 using Microsoft.AspNetCore.Blazor.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Sotsera.Blazor.Toaster.Core.Models;
@@ -10,7 +11,8 @@ namespace FMRL
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<ICrypto, BclCrypto>();
-            services.AddSingleton<IRepo, FirebaseRepo>();
+            //services.AddSingleton<IRepo, FirebaseRepo>();
+            services.AddSingleton<IRepo, ParseRepo>();
             services.AddToaster(config =>
             {
                 // Use the sample app to experiment with different options:
