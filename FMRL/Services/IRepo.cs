@@ -12,10 +12,10 @@ namespace FMRL.Services
 {
     public interface IRepo
     {
-        Task Write(string path, object value);
-        Task<T> Write<T>(string path, object value);
-        Task<T> Read<T>(string path);
-        Task Delete(string path);
+        Task Write(string type, string name, object value);
+        Task<T> Write<T>(string type, string name, object value);
+        Task<T> Read<T>(string type, string name);
+        Task Delete(string type, string name);
     }
 
     public class HttpRequestWithStatusException : HttpRequestException
@@ -40,8 +40,9 @@ namespace FMRL.Services
             _http = http;
         }
 
-        public async Task Write(string path, object value)
+        public async Task Write(string type, string name, object value)
         {
+            var path = $"/{type}/{name}.json";
             var url = new Uri(BaseUrl, path);
             var requJson = Json.Serialize(value);
             var content = new StringContent(requJson, Encoding.UTF8, "application/json");
@@ -49,8 +50,9 @@ namespace FMRL.Services
             resp.EnsureSuccessStatusCode();
         }
 
-        public async Task<T> Write<T>(string path, object value)
+        public async Task<T> Write<T>(string type, string name, object value)
         {
+            var path = $"/{type}/{name}.json";
             var url = new Uri(BaseUrl, path);
             var requJson = Json.Serialize(value);
             var content = new StringContent(requJson, Encoding.UTF8, "application/json");
@@ -61,8 +63,9 @@ namespace FMRL.Services
             return Json.Deserialize<T>(respJson);
         }
 
-        public async Task<T> Read<T>(string path)
+        public async Task<T> Read<T>(string type, string name)
         {
+            var path = $"/{type}/{name}.json";
             var url = new Uri(BaseUrl, path);
             var resp = await _http.GetAsync(url);
             try
@@ -77,8 +80,9 @@ namespace FMRL.Services
             }
         }
 
-        public async Task Delete(string path)
+        public async Task Delete(string type, string name)
         {
+            var path = $"/{type}/{name}.json";
             var url = new Uri(BaseUrl, path);
             await _http.DeleteAsync(url);
         }

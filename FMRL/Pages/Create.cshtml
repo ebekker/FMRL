@@ -130,7 +130,7 @@
         // Package it all up and write to the repo
         try
         {
-            await repo.Write($"messages/{keyHashB64}.json", new Model.EncodedMessage
+            await repo.Write("messages", keyHashB64, new Model.EncodedMessage
             {
                 IV = Util.Base64Url.ToBase64UrlString(iv),
                 Encoded = Util.Base64Url.ToBase64UrlString(encoded),

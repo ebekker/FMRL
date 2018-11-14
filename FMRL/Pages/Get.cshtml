@@ -76,7 +76,7 @@
         try
         {
             // Recall the message details, and extract the raw bytes
-            _msgDetails = await repo.Read<Model.EncodedMessage>($"messages/{_keyHashB64}.json");
+            _msgDetails = await repo.Read<Model.EncodedMessage>("messages", _keyHashB64);
         }
         catch (Exception ex)
         {
@@ -172,6 +172,6 @@
         }
 
         _message = System.Text.Encoding.UTF8.GetString(decoded);
-        await repo.Delete($"messages/{_keyHashB64}.json");
+        await repo.Delete("messages", _keyHashB64);
     }
 }
