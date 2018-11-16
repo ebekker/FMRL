@@ -10,7 +10,6 @@ namespace FMRL.Services.Impl
 {
     public class ParseRepo : IRepo
     {
-        //public const string Server = "https://parseapi.back4app.com";
         public const string Server = "https://parse.fmrl.link";
         public const string AppId = "GibBELjUuUonfRpueteo6WNUgSfWLiJfo68f3f4g";
         public const string JsKey = "zcViyU7EqJvNKfaEUolODA3CTXI1EKX2oyR4HOcc";
