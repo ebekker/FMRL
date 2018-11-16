@@ -2,6 +2,7 @@ using FMRL.Services;
 using FMRL.Services.Impl;
 using Microsoft.AspNetCore.Blazor.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.JSInterop;
 using Sotsera.Blazor.Toaster.Core.Models;
 
 namespace FMRL
@@ -32,6 +33,7 @@ namespace FMRL
         public void Configure(IBlazorApplicationBuilder app)
         {
             app.AddComponent<App>("app");
+            ((IJSInProcessRuntime)JSRuntime.Current).Invoke<bool>("_blazorXstartup.dnSetReady");
         }
     }
 }

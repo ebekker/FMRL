@@ -1,0 +1,28 @@
+﻿/*
+ * From Effect13 from Moving Letters by Tobias Ahlin:
+ *   http://tobiasahlin.com/moving-letters/#13
+ */
+
+.spinnerdiv {
+    width: 450px;
+    margin: 100px auto;
+}
+
+.ml13div {
+    width: 450px;
+    height: 40px;
+    margin: 100px auto;
+    text-align: center;
+}
+
+.ml13 {
+    font-size: 3em;
+    text-transform: uppercase;
+    letter-spacing: 0.5em;
+    font-weight: 900;
+}
+
+.ml13 .letter {
+    display: inline-block;
+    line-height: 1em;
+}
