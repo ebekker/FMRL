@@ -12,6 +12,15 @@
     <BuildNumber Condition=" '$(BUILD_BUILDID)' == '' ">0</BuildNumber>
     <Version>0.5.0.$(BuildNumber)</Version>
   </PropertyGroup>
+
+  <PropertyGroup Condition="'$(USE_LOCAL_REPO)' != ''">
+    <!--
+      - Useful for local/disconnected development/testing;
+      - enable this by building with:
+      -    dotnet build /p:USE_LOCAL_REPO=1
+      -->
+    <DefineConstants>USE_LOCAL_REPO</DefineConstants>
+  </PropertyGroup>
   
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Blazor.Browser" Version="0.6.0" />
@@ -22,6 +31,7 @@
     <PackageReference Include="MSBuildGitHash" Version="0.3.0" />
 
     <PackageReference Include="Sotsera.Blazor.Toaster" Version="0.6.0" />
+    <PackageReference Include="Blazor.Extensions.Storage" Version="0.1.6" />
   </ItemGroup>
 
   <ItemGroup>
