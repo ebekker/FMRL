@@ -35,6 +35,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\BlazorX.WebCrypto\BlazorX.WebCrypto.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Update="Shared\EmptyLayout.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>

@@ -16,6 +16,20 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Remove="content\js\crypto.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="content\js\crypto.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="content\js\crypto.js">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Blazor.Browser" Version="0.6.0" />
     <PackageReference Include="Microsoft.AspNetCore.Blazor.Build" Version="0.6.0" PrivateAssets="all" />
   </ItemGroup>
