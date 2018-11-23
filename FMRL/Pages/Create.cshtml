@@ -53,8 +53,15 @@
         </div>
         <div class="col form-group">
             <label for="fmrlLink">Recovery Link</label>
-            <input type="text" id="fmrlLink" bind=@_fmrlLink
-                   class="form-control" readonly="readonly" />
+            <div class="input-group">
+                <input ref="fmrlLinkText"
+                       type="text" id="fmrlLink" bind=@_fmrlLink
+                       class="form-control" readonly="readonly" />
+                <div class="input-group-append">
+                    <button ref="fmrlLinkButton" type="button"
+                            class="btn btn-outline-secondary">Copy</button>
+                </div>
+            </div>
             <small id="fmrlLinkHelp" class="form-text text-muted">Use this URL to retrieve the message one time.</small>
         </div>
 
@@ -71,6 +78,23 @@
     string _password;
     bool _acceptTos;
     string _fmrlLink = null;
+
+    ElementRef fmrlLinkText;
+    ElementRef fmrlLinkButton;
+
+    protected async override Task OnAfterRenderAsync()
+    {
+        // Wires up the copy button to the associated text field, this
+        // has to be called after the rendering is complete because the
+        // needed refs to the associated HTML elements aren't valid until
+        // then and we have to test if the link exist which is the only time
+        // we include and render the associated elements
+        if (_fmrlLink != null)
+        {
+            // Wire up the copy button
+            await Clipboard.ConnectTriggerToTarget(fmrlLinkText, fmrlLinkButton);
+        }
+    }
 
     void Reset()
     {
