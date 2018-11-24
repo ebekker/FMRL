@@ -7,8 +7,12 @@ Ephemeral Message Service - https://fmrl.link/
 
 ---
 
-Special thanks to these great projects that we depend on:
+Special thanks to these great projects and people that we depend on:
 
 * [Sotsera Blazor Toaster](https://github.com/sotsera/sotsera.blazor.toaster)
 * [Blazor Extensions](https://github.com/BlazorExtensions/Home)
+* Projects by [Tobias Ahlin](http://tobiasahlin.com/):
+  * [SpinKit](https://github.com/tobiasahlin/SpinKit)
+  * [Moving Letters](http://tobiasahlin.com/moving-letters)
+  * Thanks [Michael Washington](https://github.com/ADefWebserver) for the [tip](http://lightswitchhelpwebsite.com/Blog/tabid/61/EntryId/4315/A-Nicer-Looking-Blazor-Loading-Page.aspx)
 * *more to come...*
