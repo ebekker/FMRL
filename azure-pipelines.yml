@@ -4,7 +4,8 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
 
 pool:
-  vmImage: 'VS2017-Win2016'
+  #vmImage: 'VS2017-Win2016'
+  vmImage: 'vs2015-win2012r2'
 
 variables:
   solution: '**/*.sln'
