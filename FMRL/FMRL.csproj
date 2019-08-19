@@ -31,7 +31,7 @@
     <PackageReference Include="MSBuildGitHash" Version="0.4.1" />
 
     <PackageReference Include="Sotsera.Blazor.Toaster" Version="0.6.0" />
-    <PackageReference Include="Blazor.Extensions.Storage" Version="0.1.7" />
+    <PackageReference Include="Blazor.Extensions.Storage" Version="0.3.0" />
   </ItemGroup>
 
   <ItemGroup>
