@@ -1,6 +1,8 @@
 # FMRL
 Ephemeral Message Service - https://fmrl.link/
 
+:star: I appreciate your star, it helps me decide to which OSS projects I should allocate my spare time.
+
 ---
 
 [![Build status](https://dev.azure.com/ebekker/FMRL/_apis/build/status/FMRL-ASP.NET%20Core-CI)](https://dev.azure.com/ebekker/FMRL/_build/latest?definitionId=1)
